@@ -18,6 +18,11 @@ const routes = [
     component: Home
   },
   {
+    path: '/photos/:id',
+    component: PhotoDetail,
+    props: true // :idを受け取る事を許可
+  },
+  {
     path: '/login',
     component: Login,
     // ページが切り替わる直前に呼ばれる
