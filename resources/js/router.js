@@ -5,6 +5,8 @@ import VueRouter from 'vue-router'
 import Home from './pages/Home.vue'
 import Login from './pages/Login.vue'
 
+import store from './store'
+
 // VueRouterプラグインを使用する
 Vue.use(VueRouter)
 
@@ -16,7 +18,15 @@ const routes = [
   },
   {
     path: '/login',
-    component: Login
+    component: Login,
+    // ページが切り替わる直前に呼ばれる
+    beforeEnter (to, from, next) {
+      if (store.getters['auth/check']) {
+        next('/') // ページの切り替わり先を指定
+      } else {
+        next()
+      }
+    }
   }
 ]
 

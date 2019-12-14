@@ -5,10 +5,17 @@ import router from './router'
 import store from './store'
 import App from './App.vue'
 
-new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App />'
-})
+// awaitは非同期の中で記述
+const createApp = async () => {
+  await store.dispatch('auth/currentUser')
+
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App />'
+  })
+}
+
+createApp()
