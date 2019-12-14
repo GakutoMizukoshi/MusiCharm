@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 // ページコンポーネントをインポートする
 import Home from './pages/Home.vue'
 import Login from './pages/Login.vue'
+import PhotoDetail from './pages/PhotoDetail.vue'
 import SystemError from './pages/errors/System.vue'
 
 import store from './store'
