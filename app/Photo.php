@@ -17,11 +17,11 @@ class Photo extends Model
     ];
 
     protected $visible = [
-        'id', 'owner', 'url',
+        'id', 'owner', 'url', 'comments',
     ];
 
     // 一ページあたりのアイテムの数
-    protected $perPage = 3;
+    protected $perPage = 15;
 
     // IDの桁
     const ID_LENGTH = 12;
@@ -66,6 +66,15 @@ class Photo extends Model
     }
 
     /**
+     * アクセサ - url
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return Storage::cloud()->url($this->attributes['filename']);
+    }
+
+    /**
      * リレーション - usersテーブル
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -76,11 +85,11 @@ class Photo extends Model
     }
 
     /**
-     * アクセサ - url
-     * @return string
+     * リレーション - commentsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getUrlAttribute()
+    public function comments()
     {
-        return Storage::cloud()->url($this->attributes['filename']);
+        return $this->hasMany('App\Comment')->orderBy('id', 'desc');
     }
 }
