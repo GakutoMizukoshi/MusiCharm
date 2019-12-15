@@ -21,9 +21,11 @@ class PhotoDetailApiTest extends TestCase
             $photo->comments()->saveMany(factory(Comment::class, 3)->make());
         });
         $photo = Photo::first();
+        
         $response = $this->json('GET', route('photo.show', [
             'id' => $photo->id,
         ]));
+
         $response->assertStatus(200)
             ->assertJsonFragment([
                 'id' => $photo->id,
@@ -31,6 +33,8 @@ class PhotoDetailApiTest extends TestCase
                 'owner' => [
                     'name' => $photo->owner->name,
                 ],
+                'liked_by_user' => false,
+                'likes_count' => 0,
                 'comments' => $photo->comments
                     ->sortByDesc('id')
                     ->map(function ($comment) {

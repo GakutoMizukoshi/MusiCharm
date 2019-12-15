@@ -5,19 +5,22 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class Photo extends Model
 {
     // プライマリーキーの型
     protected $keyType = 'string';
 
-    // jsonに含める属性
+    // jsonに含めるアクセサ
     protected $appends = [
-        'url',
+        'url', 'likes_count', 'liked_by_user',
     ];
 
+    // jsonに含める属性
     protected $visible = [
         'id', 'owner', 'url', 'comments',
+        'likes_count', 'liked_by_user',
     ];
 
     // 一ページあたりのアイテムの数
@@ -75,6 +78,30 @@ class Photo extends Model
     }
 
     /**
+     * アクセサ - likes_count
+     * @return int
+     */
+    public function getLikesCountAttribute()
+    {
+        return $this->likes->count();
+    }
+
+    /**
+     * アクセサ - liked_by_user
+     * @return boolean
+     */
+    public function getLikedByUserAttribute()
+    {
+        if (Auth::guest()) {
+            return false;
+        }
+
+        return $this->likes->contains(function ($user) {
+            return $user->id === Auth::user()->id;
+        });
+    }
+
+    /**
      * リレーション - usersテーブル
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -91,5 +118,16 @@ class Photo extends Model
     public function comments()
     {
         return $this->hasMany('App\Comment')->orderBy('id', 'desc');
+    }
+
+    /**
+     * リレーション - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function likes()
+    {
+        // photosとusersの多対多
+        // withTimestampsはlikesテーブルのtimestamp
+        return $this->belongsToMany('App\User', 'likes')->withTimestamps();
     }
 }

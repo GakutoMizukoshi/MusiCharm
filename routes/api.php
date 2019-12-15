@@ -23,6 +23,12 @@ Route::get('/photos/{id}', 'PhotoController@show')->name('photo.show');
 // コメント取得
 Route::post('/photos/{photo}/comments', 'PhotoController@addComment')->name('photo.comment');
 
+// いいね
+Route::put('/photos/{id}/like', 'PhotoController@like')->name('photo.like');
+
+// いいね解除
+Route::delete('/photos/{id}/like', 'PhotoController@unlike');
+
 // ログインユーザー取得
 Route::get('/user', function () {
     return Auth::user();
