@@ -4,11 +4,24 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class Photo extends Model
 {
     // プライマリーキーの型
     protected $keyType = 'string';
+
+    // jsonに含める属性
+    protected $appends = [
+        'url',
+    ];
+
+    protected $visible = [
+        'id', 'owner', 'url',
+    ];
+
+    // 一ページあたりのアイテムの数
+    protected $perPage = 3;
 
     // IDの桁
     const ID_LENGTH = 12;
@@ -50,5 +63,24 @@ class Photo extends Model
         }
 
         return $id;
+    }
+
+    /**
+     * リレーション - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function owner()
+    {
+        // 関数名をownerにしているため、usersを省略せずに記述
+        return $this->belongsTo('App\User', 'user_id', 'id', 'users');
+    }
+
+    /**
+     * アクセサ - url
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return Storage::cloud()->url($this->attributes['filename']);
     }
 }
