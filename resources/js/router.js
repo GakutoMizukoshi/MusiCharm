@@ -6,6 +6,7 @@ import Home from './pages/Home.vue'
 import Login from './pages/Login.vue'
 import PhotoDetail from './pages/PhotoDetail.vue'
 import SystemError from './pages/errors/System.vue'
+import NotFound from './pages/errors/NotFound.vue'
 
 import store from './store'
 
@@ -42,6 +43,10 @@ const routes = [
   {
     path: '/500',
     computed: SystemError
+  },
+  {
+    path: '*',
+    component: NotFound
   }
 ]
 
